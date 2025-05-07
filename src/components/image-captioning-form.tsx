@@ -47,6 +47,7 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
       }
       setError(null);
       setCaption(null);
+      setApiCaption(null); // Reset API caption as well
       setFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -71,6 +72,7 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
     setIsLoading(true);
     setError(null);
     setCaption(null);
+    setApiCaption(null); // Reset API caption
 
     const currentLocale: Locale = locale || 'fr'; // Default to French if locale is somehow undefined
     const targetLanguage = currentLocale === 'fr' ? 'French' : 'English';
@@ -79,14 +81,14 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
 
     if (result.caption) {
       setCaption(result.caption);
+      onCaption(result.caption); // Call onCaption with the successful caption
     } else if (result.error) {
-      // Error messages from actions are not yet translated in this pass
       setError(result.error); 
+      onCaption(""); // Call onCaption with empty string on error
     } else {
-      // Generic error, could be translated if a key exists
-      setError(t('imageCaptioningForm.unknownError')); // Assuming you'll add this key
+      setError(t('imageCaptioningForm.unknownError'));
+      onCaption(""); // Call onCaption with empty string on unknown error
     }
-    onCaption(result.caption || "");
     setIsLoading(false);
   };
 
@@ -100,6 +102,7 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
     setIsApiLoading(true);
     setError(null);
     setApiCaption(null);
+    setCaption(null); // Reset file upload caption
 
     try {
       const response = await fetch('/api/caption', {
@@ -108,10 +111,14 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
         body: JSON.stringify({ imageUrl }),
       });
       const data = await response.json();
-      if (data.caption) {
-        setApiCaption(data.caption);
+      if (data.caption && typeof data.caption.caption === 'string') {
+        setApiCaption(data.caption.caption);
+        // If you want the URL caption to also update the main page caption:
+        // onCaption(data.caption.caption); 
       } else {
+        console.error("API response for caption is not in the expected format:", data);
         setError(t('imageCaptioningForm.apiError'));
+        setApiCaption(null);
       }
     } catch (error) {
        setApiCaption(null);
@@ -186,7 +193,14 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
             )}
           </Button>
         </form>
-         <form onSubmit={handleApiSubmit} className="mt-8 space-y-6">
+
+        <div className="relative flex py-3 items-center">
+          <div className="flex-grow border-t border-border"></div>
+          <span className="flex-shrink mx-4 text-muted-foreground text-sm">{t('imageCaptioningForm.orSeparator')}</span>
+          <div className="flex-grow border-t border-border"></div>
+        </div>
+        
+         <form onSubmit={handleApiSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="image-url">{t('imageCaptioningForm.imageUrlLabel')}</Label>
             <Input
@@ -194,7 +208,14 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
               type="url"
               placeholder={t('imageCaptioningForm.imageUrlPlaceholder')}
               value={imageUrl || ''}
-              onChange={(e) => setImageUrl(e.target.value)}
+              onChange={(e) => {
+                setImageUrl(e.target.value);
+                // Optionally clear file upload state when URL is typed
+                setImageDataUrl(null);
+                setFileName(null);
+                setCaption(null);
+                setError(null);
+              }}
             />
           </div>
           <Button type="submit" className="w-full" disabled={isApiLoading || !imageUrl}>
@@ -207,15 +228,11 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
               t('imageCaptioningForm.apiGenerateButton')
             )}          
           </Button>
-
-          {apiCaption && apiCaption.trim() !== "" && (
-            <div className="mt-6 animate-in fade-in duration-700">
-              {/* Utiliser un effet ou appeler avant le rendu */}
-              <p className="text-card-foreground/90 leading-relaxed">{apiCaption}</p>
-            </div>
-          )}
         </form>
 
+        {/* Display Area: Shows preview and caption based on which method was used */}
+        
+        {/* Image Preview (only if imageDataUrl exists from file upload) */}
         {imageDataUrl && (
           <div className="mt-6 space-y-4 animate-in fade-in duration-700">
             <h3 className="text-lg font-semibold text-card-foreground">{t('imageCaptioningForm.previewTitle')}</h3>
@@ -230,7 +247,8 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
             </div>
           </div>
         )}
-
+        
+        {/* Caption from File Upload */}
         {!isLoading && caption && (
           <div className="mt-6 space-y-4 animate-in fade-in duration-700">
             <h3 className="text-lg font-semibold text-card-foreground">{t('imageCaptioningForm.captionTitle')}</h3>
@@ -241,15 +259,37 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
             </Card>
           </div>
         )}
+
+        {/* Caption from API/URL */}
+        {!isApiLoading && apiCaption && typeof apiCaption === 'string' && apiCaption.trim() !== "" && (
+          <div className="mt-6 space-y-4 animate-in fade-in duration-700">
+            <h3 className="text-lg font-semibold text-card-foreground">{t('imageCaptioningForm.captionTitle')}</h3>
+            <Card className="bg-secondary/30">
+              <CardContent className="p-4">
+                <p className="text-card-foreground/90 leading-relaxed">{apiCaption}</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
         
-        {!isLoading && !caption && imageDataUrl && (
+        {/* Placeholder when image is uploaded but caption is pending (for file upload) */}
+        {isLoading && imageDataUrl && (
            <div className="mt-6 space-y-4 text-center text-card-foreground/70 animate-in fade-in duration-700">
-            <FileText className="mx-auto h-10 w-10" />
-            <p>{t('imageCaptioningForm.captionPlaceholder')}</p>
+            <Loader2 className="mx-auto h-10 w-10 animate-spin" />
+            <p>{t('imageCaptioningForm.generatingButton')}</p>
+          </div>
+        )}
+        
+        {/* Placeholder when image URL is provided but caption is pending (for URL input) */}
+         {isApiLoading && imageUrl && (
+           <div className="mt-6 space-y-4 text-center text-card-foreground/70 animate-in fade-in duration-700">
+            <Loader2 className="mx-auto h-10 w-10 animate-spin" />
+            <p>{t('imageCaptioningForm.apiGeneratingButton')}</p>
           </div>
         )}
 
-        {!imageDataUrl && (
+        {/* Initial placeholder when no image is loaded and no caption is generated */}
+        {!imageDataUrl && !imageUrl && !caption && !apiCaption && !isLoading && !isApiLoading && (
           <div className="mt-6 py-8 text-center text-card-foreground/70 border-2 border-dashed rounded-md border-border">
             <ImageIcon className="mx-auto h-12 w-12" />
             <p className="mt-2 text-sm">{t('imageCaptioningForm.imageAndCaptionPlaceholder')}</p>
