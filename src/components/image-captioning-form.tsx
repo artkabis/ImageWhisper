@@ -5,7 +5,7 @@ import { useState, type ChangeEvent, type FormEvent, useRef } from 'react';
 import Image from 'next/image';
 import { UploadCloud, Image as ImageIcon, FileText, Loader2, AlertTriangle } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
