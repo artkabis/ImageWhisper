@@ -1,8 +1,8 @@
 // 'use server';
 /**
- * @fileOverview Generates a text caption for an image using the BLIP model.
+ * @fileOverview Generates a text caption (summary) for an image using an AI model.
  *
- * - generateImageCaption - A function that generates the caption for an image.
+ * - generateImageCaption - A function that generates the caption/summary for an image.
  * - GenerateImageCaptionInput - The input type for the generateImageCaption function.
  * - GenerateImageCaptionOutput - The return type for the generateImageCaption function.
  */
@@ -22,7 +22,7 @@ const GenerateImageCaptionInputSchema = z.object({
 export type GenerateImageCaptionInput = z.infer<typeof GenerateImageCaptionInputSchema>;
 
 const GenerateImageCaptionOutputSchema = z.object({
-  caption: z.string().describe('A descriptive text caption of the image.'),
+  caption: z.string().describe('A concise summary of the image, maximum ten words.'),
 });
 export type GenerateImageCaptionOutput = z.infer<typeof GenerateImageCaptionOutputSchema>;
 
@@ -36,9 +36,9 @@ const generateImageCaptionPrompt = ai.definePrompt({
   name: 'generateImageCaptionPrompt',
   input: {schema: GenerateImageCaptionInputSchema},
   output: {schema: GenerateImageCaptionOutputSchema},
-  prompt: `You are an AI model that generates descriptive captions for images.
+  prompt: `You are an AI model that generates concise summaries for images.
 
-  Generate a detailed and informative caption for the image provided.
+  Generate a summary of the image provided in a maximum of ten words.
 
   Image: {{media url=photoDataUri}}`,
 });
@@ -54,3 +54,4 @@ const generateImageCaptionFlow = ai.defineFlow(
     return output!;
   }
 );
+
