@@ -15,13 +15,20 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useTranslation } from '@/lib/i18n/context';
 import type { Locale } from '@/lib/i18n/types';
 
-export function ImageCaptioningForm() {
+interface ImageCaptioningFormProps {
+  onCaption: (caption: string) => void;
+}
+
+export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
   const { t, locale } = useTranslation();
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [apiCaption, setApiCaption] = useState<string | null>(null);
+  const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -79,9 +86,39 @@ export function ImageCaptioningForm() {
       // Generic error, could be translated if a key exists
       setError(t('imageCaptioningForm.unknownError')); // Assuming you'll add this key
     }
+    onCaption(result.caption || "");
     setIsLoading(false);
   };
 
+    const handleApiSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!imageUrl) {
+      setError(t('imageCaptioningForm.imageUrlEmptyError'));
+      return;
+    }
+
+    setIsApiLoading(true);
+    setError(null);
+    setApiCaption(null);
+
+    try {
+      const response = await fetch('/api/caption', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl }),
+      });
+      const data = await response.json();
+      if (data.caption) {
+        setApiCaption(data.caption);
+      } else {
+        setError(t('imageCaptioningForm.apiError'));
+      }
+    } catch (error) {
+       setApiCaption(null);
+      setError(t('imageCaptioningForm.apiError'));
+    }
+    setIsApiLoading(false);
+  };
   return (
     <Card className="w-full shadow-xl">
       <CardHeader>
@@ -148,6 +185,35 @@ export function ImageCaptioningForm() {
               t('imageCaptioningForm.generateButton')
             )}
           </Button>
+        </form>
+         <form onSubmit={handleApiSubmit} className="mt-8 space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="image-url">{t('imageCaptioningForm.imageUrlLabel')}</Label>
+            <Input
+              id="image-url"
+              type="url"
+              placeholder={t('imageCaptioningForm.imageUrlPlaceholder')}
+              value={imageUrl || ''}
+              onChange={(e) => setImageUrl(e.target.value)}
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={isApiLoading || !imageUrl}>
+            {isApiLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t('imageCaptioningForm.apiGeneratingButton')}
+              </>
+            ) : (
+              t('imageCaptioningForm.apiGenerateButton')
+            )}          
+          </Button>
+
+          {apiCaption && apiCaption.trim() !== "" && (
+            <div className="mt-6 animate-in fade-in duration-700">
+              {/* Utiliser un effet ou appeler avant le rendu */}
+              <p className="text-card-foreground/90 leading-relaxed">{apiCaption}</p>
+            </div>
+          )}
         </form>
 
         {imageDataUrl && (

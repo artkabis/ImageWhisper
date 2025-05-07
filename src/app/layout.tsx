@@ -32,8 +32,8 @@ export default async function RootLayout({
 }>) {
   const dictionary = await getDictionary(defaultLocale);
   return (
-    <html lang={defaultLocale} className={`${GeistSans.variable}`}>
-      <body className={`font-sans antialiased`}>
+    <html lang={defaultLocale} className={GeistSans.variable} suppressHydrationWarning>
+      <body className="font-sans antialiased" suppressHydrationWarning>
         <TranslationProvider locale={defaultLocale} dictionary={dictionary}>
           {children}
           <Toaster />
@@ -42,3 +42,4 @@ export default async function RootLayout({
     </html>
   );
 }
+
