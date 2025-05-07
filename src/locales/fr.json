@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "title": "ImageWhisper - Légendes d'images par IA",
+    "description": "Téléchargez une image et obtenez une légende générée par IA avec ImageWhisper."
+  },
+  "homePage": {
+    "title": "ImageWhisper",
+    "subtitle": "Laissez l'IA peindre mille mots pour vos images.",
+    "footer": "ImageWhisper",
+    "allRightsReserved": "Tous droits réservés."
+  },
+  "imageCaptioningForm": {
+    "cardTitle": "Générer une légende d'image",
+    "cardDescription": "Téléchargez une image et notre IA la décrira pour vous.",
+    "uploadLabel": "Télécharger une image",
+    "uploadMaxSize": "(Max 4Mo)",
+    "uploadClick": "Cliquez pour télécharger",
+    "uploadDragAndDrop": "ou glissez-déposez",
+    "uploadSelectedFile": "Sélectionné : {{fileName}}",
+    "uploadSupportedFormats": "PNG, JPG, GIF, WEBP jusqu'à 4Mo",
+    "errorTitle": "Erreur",
+    "fileTooLargeError": "Le fichier est trop volumineux. La taille maximale est de 4Mo.",
+    "fileReadError": "Échec de la lecture du fichier image.",
+    "selectImageError": "Veuillez d'abord sélectionner une image.",
+    "generatingButton": "Génération...",
+    "generateButton": "Générer la légende",
+    "previewTitle": "Aperçu :",
+    "imageAltPreview": "Aperçu téléchargé",
+    "captionTitle": "Légende générée :",
+    "captionPlaceholder": "La légende de votre image apparaîtra ici une fois générée.",
+    "imageAndCaptionPlaceholder": "Votre image téléchargée et sa légende apparaîtront ici.",
+    "poweredBy": "Propulsé par Genkit et le modèle BLIP."
+  }
+}

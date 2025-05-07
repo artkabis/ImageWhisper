@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "title": "ImageWhisper - AI Image Captioning",
+    "description": "Upload an image and get an AI-generated caption with ImageWhisper."
+  },
+  "homePage": {
+    "title": "ImageWhisper",
+    "subtitle": "Let AI paint a thousand words for your pictures.",
+    "footer": "ImageWhisper",
+    "allRightsReserved": "All rights reserved."
+  },
+  "imageCaptioningForm": {
+    "cardTitle": "Generate Image Caption",
+    "cardDescription": "Upload an image and our AI will describe it for you.",
+    "uploadLabel": "Upload Image",
+    "uploadMaxSize": "(Max 4MB)",
+    "uploadClick": "Click to upload",
+    "uploadDragAndDrop": "or drag and drop",
+    "uploadSelectedFile": "Selected: {{fileName}}",
+    "uploadSupportedFormats": "PNG, JPG, GIF, WEBP up to 4MB",
+    "errorTitle": "Error",
+    "fileTooLargeError": "File is too large. Maximum size is 4MB.",
+    "fileReadError": "Failed to read the image file.",
+    "selectImageError": "Please select an image first.",
+    "generatingButton": "Generating...",
+    "generateButton": "Generate Caption",
+    "previewTitle": "Preview:",
+    "imageAltPreview": "Uploaded preview",
+    "captionTitle": "Generated Caption:",
+    "captionPlaceholder": "Your image caption will appear here once generated.",
+    "imageAndCaptionPlaceholder": "Your uploaded image and caption will appear here.",
+    "poweredBy": "Powered by Genkit and BLIP model."
+  }
+}

@@ -12,8 +12,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { cn } from '@/lib/utils';
 import { handleGenerateCaption } from '@/app/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useTranslation } from '@/lib/i18n/context';
 
 export function ImageCaptioningForm() {
+  const { t } = useTranslation();
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -26,7 +28,7 @@ export function ImageCaptioningForm() {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 4 * 1024 * 1024) { // Limit file size to 4MB
-        setError('File is too large. Maximum size is 4MB.');
+        setError(t('imageCaptioningForm.fileTooLargeError'));
         setImageDataUrl(null);
         setFileName(null);
         setCaption(null);
@@ -43,7 +45,7 @@ export function ImageCaptioningForm() {
         setImageDataUrl(reader.result as string);
       };
       reader.onerror = () => {
-        setError('Failed to read the image file.');
+        setError(t('imageCaptioningForm.fileReadError'));
         setImageDataUrl(null);
         setFileName(null);
       }
@@ -54,7 +56,7 @@ export function ImageCaptioningForm() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!imageDataUrl) {
-      setError('Please select an image first.');
+      setError(t('imageCaptioningForm.selectImageError'));
       return;
     }
 
@@ -67,9 +69,11 @@ export function ImageCaptioningForm() {
     if (result.caption) {
       setCaption(result.caption);
     } else if (result.error) {
-      setError(result.error);
+      // Error messages from actions are not yet translated in this pass
+      setError(result.error); 
     } else {
-      setError('An unknown error occurred while generating the caption.');
+      // Generic error, could be translated if a key exists
+      setError('An unknown error occurred while generating the caption.'); 
     }
     setIsLoading(false);
   };
@@ -77,16 +81,16 @@ export function ImageCaptioningForm() {
   return (
     <Card className="w-full shadow-xl">
       <CardHeader>
-        <CardTitle className="text-2xl text-center">Generate Image Caption</CardTitle>
+        <CardTitle className="text-2xl text-center">{t('imageCaptioningForm.cardTitle')}</CardTitle>
         <CardDescription className="text-center text-card-foreground/80">
-          Upload an image and our AI will describe it for you.
+          {t('imageCaptioningForm.cardDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <Label htmlFor="image-upload" className="text-sm font-medium text-card-foreground">
-              Upload Image (Max 4MB)
+              {t('imageCaptioningForm.uploadLabel')} {t('imageCaptioningForm.uploadMaxSize')}
             </Label>
             <div className="mt-2 flex items-center justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md border-border hover:border-primary transition-colors">
               <div className="space-y-1 text-center">
@@ -99,7 +103,7 @@ export function ImageCaptioningForm() {
                       'relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 p-0'
                     )}
                   >
-                    <span>Click to upload</span>
+                    <span>{t('imageCaptioningForm.uploadClick')}</span>
                     <Input
                       id="image-upload-input"
                       name="image-upload-input"
@@ -111,10 +115,12 @@ export function ImageCaptioningForm() {
                       aria-describedby="file-name-status"
                     />
                   </Label>
-                  <p className="pl-1">or drag and drop</p>
+                  <p className="pl-1">{t('imageCaptioningForm.uploadDragAndDrop')}</p>
                 </div>
                 <p className="text-xs text-card-foreground/60" id="file-name-status">
-                  {fileName ? `Selected: ${fileName}` : 'PNG, JPG, GIF, WEBP up to 4MB'}
+                  {fileName 
+                    ? t('imageCaptioningForm.uploadSelectedFile', { fileName }) 
+                    : t('imageCaptioningForm.uploadSupportedFormats')}
                 </p>
               </div>
             </div>
@@ -123,7 +129,7 @@ export function ImageCaptioningForm() {
           {error && (
             <Alert variant="destructive" className="animate-in fade-in duration-300">
               <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>{t('imageCaptioningForm.errorTitle')}</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
@@ -132,26 +138,32 @@ export function ImageCaptioningForm() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
+                {t('imageCaptioningForm.generatingButton')}
               </>
             ) : (
-              'Generate Caption'
+              t('imageCaptioningForm.generateButton')
             )}
           </Button>
         </form>
 
         {imageDataUrl && (
           <div className="mt-6 space-y-4 animate-in fade-in duration-700">
-            <h3 className="text-lg font-semibold text-card-foreground">Preview:</h3>
+            <h3 className="text-lg font-semibold text-card-foreground">{t('imageCaptioningForm.previewTitle')}</h3>
             <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border shadow-sm">
-              <Image src={imageDataUrl} alt="Uploaded preview" layout="fill" objectFit="contain" data-ai-hint="uploaded image" />
+              <Image 
+                src={imageDataUrl} 
+                alt={t('imageCaptioningForm.imageAltPreview')} 
+                layout="fill" 
+                objectFit="contain" 
+                data-ai-hint="uploaded image" 
+              />
             </div>
           </div>
         )}
 
         {!isLoading && caption && (
           <div className="mt-6 space-y-4 animate-in fade-in duration-700">
-            <h3 className="text-lg font-semibold text-card-foreground">Generated Caption:</h3>
+            <h3 className="text-lg font-semibold text-card-foreground">{t('imageCaptioningForm.captionTitle')}</h3>
             <Card className="bg-secondary/30">
               <CardContent className="p-4">
                 <p className="text-card-foreground/90 leading-relaxed">{caption}</p>
@@ -163,21 +175,21 @@ export function ImageCaptioningForm() {
         {!isLoading && !caption && imageDataUrl && (
            <div className="mt-6 space-y-4 text-center text-card-foreground/70 animate-in fade-in duration-700">
             <FileText className="mx-auto h-10 w-10" />
-            <p>Your image caption will appear here once generated.</p>
+            <p>{t('imageCaptioningForm.captionPlaceholder')}</p>
           </div>
         )}
 
         {!imageDataUrl && (
           <div className="mt-6 py-8 text-center text-card-foreground/70 border-2 border-dashed rounded-md border-border">
             <ImageIcon className="mx-auto h-12 w-12" />
-            <p className="mt-2 text-sm">Your uploaded image and caption will appear here.</p>
+            <p className="mt-2 text-sm">{t('imageCaptioningForm.imageAndCaptionPlaceholder')}</p>
           </div>
         )}
 
       </CardContent>
       <CardFooter>
          <p className="text-xs text-card-foreground/60 text-center w-full">
-            Powered by Genkit and BLIP model.
+            {t('imageCaptioningForm.poweredBy')}
           </p>
       </CardFooter>
     </Card>
