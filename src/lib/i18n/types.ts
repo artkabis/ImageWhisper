@@ -28,6 +28,7 @@ export interface Translations {
     fileTooLargeError: string;
     fileReadError: string;
     selectImageError: string;
+    unknownError: string; // Added this line
     generatingButton: string;
     generateButton: string;
     previewTitle: string;

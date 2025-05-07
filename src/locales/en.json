@@ -22,6 +22,7 @@
     "fileTooLargeError": "File is too large. Maximum size is 4MB.",
     "fileReadError": "Failed to read the image file.",
     "selectImageError": "Please select an image first.",
+    "unknownError": "An unknown error occurred while generating the caption.",
     "generatingButton": "Generating...",
     "generateButton": "Generate Caption",
     "previewTitle": "Preview:",

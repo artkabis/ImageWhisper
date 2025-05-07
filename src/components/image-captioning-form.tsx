@@ -13,9 +13,10 @@ import { cn } from '@/lib/utils';
 import { handleGenerateCaption } from '@/app/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useTranslation } from '@/lib/i18n/context';
+import type { Locale } from '@/lib/i18n/types';
 
 export function ImageCaptioningForm() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -64,7 +65,10 @@ export function ImageCaptioningForm() {
     setError(null);
     setCaption(null);
 
-    const result = await handleGenerateCaption(imageDataUrl);
+    const currentLocale: Locale = locale || 'fr'; // Default to French if locale is somehow undefined
+    const targetLanguage = currentLocale === 'fr' ? 'French' : 'English';
+
+    const result = await handleGenerateCaption(imageDataUrl, targetLanguage);
 
     if (result.caption) {
       setCaption(result.caption);
@@ -73,7 +77,7 @@ export function ImageCaptioningForm() {
       setError(result.error); 
     } else {
       // Generic error, could be translated if a key exists
-      setError('An unknown error occurred while generating the caption.'); 
+      setError(t('imageCaptioningForm.unknownError')); // Assuming you'll add this key
     }
     setIsLoading(false);
   };
@@ -153,8 +157,8 @@ export function ImageCaptioningForm() {
               <Image 
                 src={imageDataUrl} 
                 alt={t('imageCaptioningForm.imageAltPreview')} 
-                layout="fill" 
-                objectFit="contain" 
+                fill
+                style={{ objectFit: 'contain' }}
                 data-ai-hint="uploaded image" 
               />
             </div>

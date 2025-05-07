@@ -18,6 +18,10 @@ const GenerateImageCaptionInputSchema = z.object({
     .describe(
       "A photo, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  targetLanguage: z
+    .string()
+    .describe('The desired language for the caption, e.g., "French", "English".')
+    .optional(),
 });
 export type GenerateImageCaptionInput = z.infer<typeof GenerateImageCaptionInputSchema>;
 
@@ -37,9 +41,7 @@ const generateImageCaptionPrompt = ai.definePrompt({
   input: {schema: GenerateImageCaptionInputSchema},
   output: {schema: GenerateImageCaptionOutputSchema},
   prompt: `You are an AI model that generates concise summaries for images.
-
-  Generate a summary of the image provided in a maximum of ten words.
-
+  Generate a summary of the image provided in a maximum of ten words{{#if targetLanguage}}, in {{targetLanguage}}{{else}}, in English{{/if}}.
   Image: {{media url=photoDataUri}}`,
 });
 

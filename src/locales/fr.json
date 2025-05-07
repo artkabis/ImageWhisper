@@ -22,6 +22,7 @@
     "fileTooLargeError": "Le fichier est trop volumineux. La taille maximale est de 4Mo.",
     "fileReadError": "Échec de la lecture du fichier image.",
     "selectImageError": "Veuillez d'abord sélectionner une image.",
+    "unknownError": "Une erreur inconnue s'est produite lors de la génération de la légende.",
     "generatingButton": "Génération...",
     "generateButton": "Générer la légende",
     "previewTitle": "Aperçu :",
