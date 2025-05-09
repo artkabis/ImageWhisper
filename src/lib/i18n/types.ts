@@ -44,6 +44,7 @@ export interface Translations {
     generateButton: string; // For single file upload
     previewTitle: string;
     imageAltPreview: string; // For single file upload preview
+    imageLoadError: string; // For when an image fails to load from URL in batch results
     captionTitle: string; // For single file upload caption
     resultsTitle: string; // For multi-URL results
     imagePreviewAlt: string; // For multi-URL image preview, e.g., "Preview for {{url}}"
@@ -56,3 +57,4 @@ export interface Translations {
   // Add other keys as needed
   [key: string]: any; // Allow for nested keys
 }
+

@@ -119,17 +119,54 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
 
   const handleBatchUrlSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const urls = imageUrlsInput.split('\\n').map(url => url.trim()).filter(url => url.length > 0);
+    
+    const lines = imageUrlsInput.split('\n');
+    const urls: string[] = [];
+    const invalidParts: string[] = [];
 
+    lines.forEach(line => {
+      // Normalize multiple spaces to single space, then split by space
+      const parts = line.trim().replace(/\s+/g, ' ').split(' ');
+      parts.forEach(part => {
+        const trimmedPart = part.trim();
+        if (trimmedPart.length > 0) {
+          try {
+            const parsedUrl = new URL(trimmedPart); // Validate URL structure
+            if (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") {
+                 urls.push(trimmedPart);
+            } else {
+              // This case should ideally not be hit if new URL() parses correctly
+              // and protocol is enforced, but as a fallback.
+              invalidParts.push(trimmedPart);
+            }
+          } catch (e) {
+            // Not a valid URL structure
+            invalidParts.push(trimmedPart);
+          }
+        }
+      });
+    });
+
+    if (invalidParts.length > 0) {
+      console.warn(`Skipped invalid URL parts: ${invalidParts.join(', ')}`);
+      // Optionally, set an error to inform the user via UI, e.g.
+      // setError(t('imageCaptioningForm.invalidUrlPartsError', { parts: invalidParts.join(', ') }));
+      // This would require adding a new translation key for 'invalidUrlPartsError'.
+      // This would require adding a new translation key for 'invalidUrlPartsError'.
+    }
+    
     if (urls.length === 0) {
       setError(t('imageCaptioningForm.urlsEmptyError'));
+      setIsApiLoading(false);
       return;
     }
+
 
     setIsApiLoading(true);
     setError(null);
     setApiResults([]);
     setImageDataUrl(null); // Clear file upload data
+    setFileName(null);
     setCaption(null);     // Clear file upload caption
 
     const currentLocale: Locale = locale || 'fr';
@@ -196,7 +233,7 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
                     htmlFor="image-upload-input"
                     className={cn(
                       'relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 p-0',
-                      'hover:underline' // Simplified styling for link-like appearance
+                      'hover:underline' 
                     )}
                   >
                     <span>{t('imageCaptioningForm.uploadClick')}</span>
@@ -208,8 +245,8 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
                       className="sr-only"
                       onChange={(e) => {
                         handleFileChange(e);
-                        setImageUrlsInput(''); // Clear URL input on file selection
-                        setApiResults([]);    // Clear URL results
+                        setImageUrlsInput(''); 
+                        setApiResults([]);    
                       }}
                       ref={fileInputRef}
                       aria-describedby="file-name-status"
@@ -253,10 +290,9 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
               value={imageUrlsInput}
               onChange={(e) => {
                 setImageUrlsInput(e.target.value);
-                setImageDataUrl(null); // Clear file upload data
+                setImageDataUrl(null); 
                 setFileName(null);
                 setCaption(null);
-                // setApiResults([]); // Optionally clear previous URL results on typing
                 setError(null);
               }}
               rows={4}
@@ -351,7 +387,19 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
                         alt={t('imageCaptioningForm.imagePreviewAlt', { url: result.imageUrl })}
                         fill
                         style={{ objectFit: 'contain' }}
-                        onError={(e) => (e.currentTarget.style.display = 'none')} // Hide if image fails to load
+                        onError={(e) => {
+                          // Attempt to hide the image, but also consider logging or more robust error display for the image itself
+                          const target = e.currentTarget;
+                          target.style.display = 'none';
+                          // Create a fallback text element if image fails to load
+                          const parent = target.parentElement;
+                          if (parent && !parent.querySelector('.image-load-error-fallback')) {
+                            const errorText = document.createElement('div');
+                            errorText.className = 'image-load-error-fallback text-xs text-destructive text-center p-2';
+                            errorText.textContent = t('imageCaptioningForm.imageLoadError', {url: result.imageUrl});
+                            parent.appendChild(errorText);
+                          }
+                        }}
                         data-ai-hint="remote image"
                       />
                        <noscript>
@@ -399,3 +447,4 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
     </Card>
   );
 }
+

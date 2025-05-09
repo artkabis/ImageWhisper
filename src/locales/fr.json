@@ -22,7 +22,7 @@
     "orSeparator": "OU",
     "urlsLabel": "Ou entrez les URLs des images (une par ligne)",
     "urlsPlaceholder": "https://example.com/image1.jpg\nhttps://example.com/image2.png\n...",
-    "urlsEmptyError": "Veuillez entrer au moins une URL d'image.",
+    "urlsEmptyError": "Veuillez entrer au moins une URL d'image valide.",
     "generateFromUrlsButton": "Générer les légendes depuis les URLs",
     "generatingFromUrlsButton": "Génération depuis les URLs...",
     "apiError": "Échec de la génération des légendes. Veuillez vérifier les URLs et réessayer.",
@@ -37,6 +37,7 @@
     "generateButton": "Générer la légende",
     "previewTitle": "Aperçu :",
     "imageAltPreview": "Aperçu téléchargé",
+    "imageLoadError": "Impossible de charger l'image depuis {{url}}",
     "captionTitle": "Légende générée :",
     "resultsTitle": "Résultats :",
     "imagePreviewAlt": "Aperçu pour {{url}}",
@@ -46,3 +47,4 @@
     "poweredBy": "Propulsé par Genkit et le modèle Gemini."
   }
 }
+

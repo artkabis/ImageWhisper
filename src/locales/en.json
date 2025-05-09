@@ -22,7 +22,7 @@
     "orSeparator": "OR",
     "urlsLabel": "Or Enter Image URLs (one per line)",
     "urlsPlaceholder": "https://example.com/image1.jpg\nhttps://example.com/image2.png\n...",
-    "urlsEmptyError": "Please enter at least one image URL.",
+    "urlsEmptyError": "Please enter at least one valid image URL.",
     "generateFromUrlsButton": "Generate Captions from URLs",
     "generatingFromUrlsButton": "Generating from URLs...",
     "apiError": "Failed to generate captions. Please check the URLs and try again.",
@@ -37,6 +37,7 @@
     "generateButton": "Generate Caption",
     "previewTitle": "Preview:",
     "imageAltPreview": "Uploaded preview",
+    "imageLoadError": "Could not load image from {{url}}",
     "captionTitle": "Generated Caption:",
     "resultsTitle": "Results:",
     "imagePreviewAlt": "Preview for {{url}}",
@@ -46,3 +47,4 @@
     "poweredBy": "Powered by Genkit and Gemini model."
   }
 }
+
