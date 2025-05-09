@@ -29,6 +29,8 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [apiCaption, setApiCaption] = useState<string | null>(null);
   const [isApiLoading, setIsApiLoading] = useState<boolean>(false);
+  const [maxWords, setMaxWords] = useState<number | undefined>(10);
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -47,7 +49,7 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
       }
       setError(null);
       setCaption(null);
-      setApiCaption(null); // Reset API caption as well
+      setApiCaption(null); 
       setFileName(file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -62,6 +64,20 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
     }
   };
 
+  const handleMaxWordsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (value === "") {
+      setMaxWords(undefined);
+    } else {
+      const numValue = parseInt(value, 10);
+      if (!isNaN(numValue) && numValue > 0) {
+        setMaxWords(numValue);
+      } else if (value === "" || numValue <=0) { // Allow clearing or setting to 0 (which means undefined for us)
+        setMaxWords(undefined)
+      }
+    }
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!imageDataUrl) {
@@ -72,27 +88,27 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
     setIsLoading(true);
     setError(null);
     setCaption(null);
-    setApiCaption(null); // Reset API caption
+    setApiCaption(null); 
 
-    const currentLocale: Locale = locale || 'fr'; // Default to French if locale is somehow undefined
+    const currentLocale: Locale = locale || 'fr'; 
     const targetLanguage = currentLocale === 'fr' ? 'French' : 'English';
 
-    const result = await handleGenerateCaption(imageDataUrl, targetLanguage);
+    const result = await handleGenerateCaption(imageDataUrl, targetLanguage, maxWords);
 
     if (result.caption) {
       setCaption(result.caption);
-      onCaption(result.caption); // Call onCaption with the successful caption
+      onCaption(result.caption); 
     } else if (result.error) {
       setError(result.error); 
-      onCaption(""); // Call onCaption with empty string on error
+      onCaption(""); 
     } else {
       setError(t('imageCaptioningForm.unknownError'));
-      onCaption(""); // Call onCaption with empty string on unknown error
+      onCaption(""); 
     }
     setIsLoading(false);
   };
 
-    const handleApiSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleApiSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!imageUrl) {
       setError(t('imageCaptioningForm.imageUrlEmptyError'));
@@ -102,20 +118,27 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
     setIsApiLoading(true);
     setError(null);
     setApiCaption(null);
-    setCaption(null); // Reset file upload caption
+    setCaption(null); 
+
+    const currentLocale: Locale = locale || 'fr';
+    const targetLanguage = currentLocale === 'fr' ? 'French' : 'English';
 
     try {
       const response = await fetch('/api/caption', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageUrl }),
+        body: JSON.stringify({ imageUrl, targetLanguage, maxWords }),
       });
       const data = await response.json();
-      if (data.caption && typeof data.caption.caption === 'string') {
+
+      if (data.caption && data.caption.caption && typeof data.caption.caption === 'string') {
         setApiCaption(data.caption.caption);
-        // If you want the URL caption to also update the main page caption:
-        // onCaption(data.caption.caption); 
-      } else {
+      } else if (data.error) {
+        console.error("API error:", data.error);
+        setError(data.error || t('imageCaptioningForm.apiError'));
+        setApiCaption(null);
+      }
+      else {
         console.error("API response for caption is not in the expected format:", data);
         setError(t('imageCaptioningForm.apiError'));
         setApiCaption(null);
@@ -126,6 +149,7 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
     }
     setIsApiLoading(false);
   };
+
   return (
     <Card className="w-full shadow-xl">
       <CardHeader>
@@ -135,6 +159,21 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="max-words" className="text-sm font-medium text-card-foreground">
+            {t('imageCaptioningForm.maxWordsLabel')}
+          </Label>
+          <Input
+            id="max-words"
+            type="number"
+            min="1"
+            placeholder={t('imageCaptioningForm.maxWordsPlaceholder')}
+            value={maxWords === undefined ? '' : maxWords}
+            onChange={handleMaxWordsChange}
+            className="w-full"
+          />
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <Label htmlFor="image-upload" className="text-sm font-medium text-card-foreground">
@@ -210,7 +249,6 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
               value={imageUrl || ''}
               onChange={(e) => {
                 setImageUrl(e.target.value);
-                // Optionally clear file upload state when URL is typed
                 setImageDataUrl(null);
                 setFileName(null);
                 setCaption(null);
@@ -229,10 +267,7 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
             )}          
           </Button>
         </form>
-
-        {/* Display Area: Shows preview and caption based on which method was used */}
         
-        {/* Image Preview (only if imageDataUrl exists from file upload) */}
         {imageDataUrl && (
           <div className="mt-6 space-y-4 animate-in fade-in duration-700">
             <h3 className="text-lg font-semibold text-card-foreground">{t('imageCaptioningForm.previewTitle')}</h3>
@@ -248,7 +283,6 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
           </div>
         )}
         
-        {/* Caption from File Upload */}
         {!isLoading && caption && (
           <div className="mt-6 space-y-4 animate-in fade-in duration-700">
             <h3 className="text-lg font-semibold text-card-foreground">{t('imageCaptioningForm.captionTitle')}</h3>
@@ -260,7 +294,6 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
           </div>
         )}
 
-        {/* Caption from API/URL */}
         {!isApiLoading && apiCaption && typeof apiCaption === 'string' && apiCaption.trim() !== "" && (
           <div className="mt-6 space-y-4 animate-in fade-in duration-700">
             <h3 className="text-lg font-semibold text-card-foreground">{t('imageCaptioningForm.captionTitle')}</h3>
@@ -272,7 +305,6 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
           </div>
         )}
         
-        {/* Placeholder when image is uploaded but caption is pending (for file upload) */}
         {isLoading && imageDataUrl && (
            <div className="mt-6 space-y-4 text-center text-card-foreground/70 animate-in fade-in duration-700">
             <Loader2 className="mx-auto h-10 w-10 animate-spin" />
@@ -280,7 +312,6 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
           </div>
         )}
         
-        {/* Placeholder when image URL is provided but caption is pending (for URL input) */}
          {isApiLoading && imageUrl && (
            <div className="mt-6 space-y-4 text-center text-card-foreground/70 animate-in fade-in duration-700">
             <Loader2 className="mx-auto h-10 w-10 animate-spin" />
@@ -288,7 +319,6 @@ export function ImageCaptioningForm({ onCaption }: ImageCaptioningFormProps) {
           </div>
         )}
 
-        {/* Initial placeholder when no image is loaded and no caption is generated */}
         {!imageDataUrl && !imageUrl && !caption && !apiCaption && !isLoading && !isApiLoading && (
           <div className="mt-6 py-8 text-center text-card-foreground/70 border-2 border-dashed rounded-md border-border">
             <ImageIcon className="mx-auto h-12 w-12" />

@@ -1,3 +1,4 @@
+
 /**
  * @fileOverviewDefines internationalization-related types.
  */
@@ -24,13 +25,15 @@ export interface Translations {
     uploadDragAndDrop: string;
     uploadSelectedFile: string;
     uploadSupportedFormats: string;
-    orSeparator: string; // Added for "OR" text
-    imageUrlLabel: string; // Added for URL input label
-    imageUrlPlaceholder: string; // Added for URL input placeholder
-    imageUrlEmptyError: string; // Added for URL empty error
-    apiGenerateButton: string; // Added for URL submit button
-    apiGeneratingButton: string; // Added for URL submit button - loading state
-    apiError: string; // Added for URL API error
+    orSeparator: string; 
+    imageUrlLabel: string; 
+    imageUrlPlaceholder: string; 
+    imageUrlEmptyError: string; 
+    apiGenerateButton: string; 
+    apiGeneratingButton: string; 
+    apiError: string; 
+    maxWordsLabel: string; // New key for max words label
+    maxWordsPlaceholder: string; // New key for max words placeholder
     errorTitle: string;
     fileTooLargeError: string;
     fileReadError: string;

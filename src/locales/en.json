@@ -26,6 +26,8 @@
     "apiGenerateButton": "Generate Caption from URL",
     "apiGeneratingButton": "Generating from URL...",
     "apiError": "Failed to generate caption from URL. Please check the URL and try again.",
+    "maxWordsLabel": "Max Words for Caption:",
+    "maxWordsPlaceholder": "e.g., 10 (default)",
     "errorTitle": "Error",
     "fileTooLargeError": "File is too large. Maximum size is 4MB.",
     "fileReadError": "Failed to read the image file.",

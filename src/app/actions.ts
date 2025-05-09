@@ -10,7 +10,8 @@ interface HandleGenerateCaptionResult {
 
 export async function handleGenerateCaption(
   photoDataUri: string,
-  targetLanguage?: string
+  targetLanguage?: string,
+  maxWords?: number,
 ): Promise<HandleGenerateCaptionResult> {
   if (!photoDataUri) {
     return { error: 'Image data is missing. Please upload an image.' };
@@ -22,7 +23,13 @@ export async function handleGenerateCaption(
   }
 
   try {
-    const input: GenerateImageCaptionInput = { photoDataUri, targetLanguage };
+    const input: GenerateImageCaptionInput = { photoDataUri };
+    if (targetLanguage) {
+      input.targetLanguage = targetLanguage;
+    }
+    if (maxWords && maxWords > 0) {
+      input.maxWords = maxWords;
+    }
     const result = await generateImageCaption(input);
     if (result.caption) {
       return { caption: result.caption };

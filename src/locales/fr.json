@@ -26,6 +26,8 @@
     "apiGenerateButton": "Générer la légende depuis l'URL",
     "apiGeneratingButton": "Génération depuis l'URL...",
     "apiError": "Échec de la génération de la légende à partir de l'URL. Veuillez vérifier l'URL et réessayer.",
+    "maxWordsLabel": "Mots max. pour la légende :",
+    "maxWordsPlaceholder": "ex: 10 (défaut)",
     "errorTitle": "Erreur",
     "fileTooLargeError": "Le fichier est trop volumineux. La taille maximale est de 4Mo.",
     "fileReadError": "Échec de la lecture du fichier image.",

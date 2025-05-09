@@ -23,11 +23,17 @@ const GenerateImageCaptionInputSchema = z.object({
     .string()
     .describe('The desired language for the caption, e.g., "French", "English".')
     .optional(),
+  maxWords: z
+    .number()
+    .int()
+    .positive()
+    .optional()
+    .describe('The maximum number of words for the caption. If not provided, defaults to approximately 10 words.'),
 });
 export type GenerateImageCaptionInput = z.infer<typeof GenerateImageCaptionInputSchema>;
 
 const GenerateImageCaptionOutputSchema = z.object({
-  caption: z.string().describe('A concise summary of the image, maximum ten words.'),
+  caption: z.string().describe('A concise summary of the image.'),
 });
 export type GenerateImageCaptionOutput = z.infer<typeof GenerateImageCaptionOutputSchema>;
 
@@ -43,7 +49,9 @@ const generateImageCaptionPrompt = ai.definePrompt({
   output: {schema: GenerateImageCaptionOutputSchema},
   prompt: `You are an AI model that generates highly descriptive and accurate summaries for images, capturing their essence.
 Focus on the main subject, action, and setting.
-Describe the image vividly but concisely, in a maximum of ten words{{#if targetLanguage}}, in {{targetLanguage}}{{else}}, in English{{/if}}.
+Describe the image vividly but concisely.
+{{#if maxWords}}The caption should be a maximum of {{{maxWords}}} words.{{else}}The caption should be a maximum of ten words.{{/if}}
+{{#if targetLanguage}}The caption should be in {{targetLanguage}}.{{else}}The caption should be in English.{{/if}}
 Image: {{media url=photoDataUri}}`,
 });
 
