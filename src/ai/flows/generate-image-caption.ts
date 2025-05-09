@@ -1,3 +1,4 @@
+
 // 'use server';
 /**
  * @fileOverview Generates a text caption (summary) for an image using an AI model.
@@ -40,9 +41,10 @@ const generateImageCaptionPrompt = ai.definePrompt({
   name: 'generateImageCaptionPrompt',
   input: {schema: GenerateImageCaptionInputSchema},
   output: {schema: GenerateImageCaptionOutputSchema},
-  prompt: `You are an AI model that generates concise summaries for images.
-  Generate a summary of the image provided in a maximum of ten words{{#if targetLanguage}}, in {{targetLanguage}}{{else}}, in English{{/if}}.
-  Image: {{media url=photoDataUri}}`,
+  prompt: `You are an AI model that generates highly descriptive and accurate summaries for images, capturing their essence.
+Focus on the main subject, action, and setting.
+Describe the image vividly but concisely, in a maximum of ten words{{#if targetLanguage}}, in {{targetLanguage}}{{else}}, in English{{/if}}.
+Image: {{media url=photoDataUri}}`,
 });
 
 const generateImageCaptionFlow = ai.defineFlow(
