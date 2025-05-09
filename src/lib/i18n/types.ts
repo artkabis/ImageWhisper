@@ -25,27 +25,32 @@ export interface Translations {
     uploadDragAndDrop: string;
     uploadSelectedFile: string;
     uploadSupportedFormats: string;
-    orSeparator: string; 
-    imageUrlLabel: string; 
-    imageUrlPlaceholder: string; 
-    imageUrlEmptyError: string; 
-    apiGenerateButton: string; 
-    apiGeneratingButton: string; 
-    apiError: string; 
-    maxWordsLabel: string; // New key for max words label
-    maxWordsPlaceholder: string; // New key for max words placeholder
+    orSeparator: string;
+    // Replaced single URL fields with multi-URL fields
+    urlsLabel: string; // Was: imageUrlLabel
+    urlsPlaceholder: string; // Was: imageUrlPlaceholder
+    urlsEmptyError: string; // Was: imageUrlEmptyError
+    generateFromUrlsButton: string; // Was: apiGenerateButton
+    generatingFromUrlsButton: string; // Was: apiGeneratingButton
+    apiError: string; // General API error
+    maxWordsLabel: string;
+    maxWordsPlaceholder: string;
     errorTitle: string;
     fileTooLargeError: string;
     fileReadError: string;
     selectImageError: string;
     unknownError: string;
-    generatingButton: string;
-    generateButton: string;
+    generatingButton: string; // For single file upload
+    generateButton: string; // For single file upload
     previewTitle: string;
-    imageAltPreview: string;
-    captionTitle: string;
-    captionPlaceholder: string;
-    imageAndCaptionPlaceholder: string;
+    imageAltPreview: string; // For single file upload preview
+    captionTitle: string; // For single file upload caption
+    resultsTitle: string; // For multi-URL results
+    imagePreviewAlt: string; // For multi-URL image preview, e.g., "Preview for {{url}}"
+    errorForUrl: string; // e.g., "Error for {{url}}: {{errorMessage}}"
+    captionForUrl: string; // e.g., "Caption for {{url}}:" - might not be needed if implicit
+    captionPlaceholder: string; // General placeholder if needed
+    imageAndCaptionPlaceholder: string; // Main placeholder when nothing is loaded
     poweredBy: string;
   };
   // Add other keys as needed

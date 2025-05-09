@@ -12,7 +12,7 @@
   },
   "imageCaptioningForm": {
     "cardTitle": "Générer une légende d'image",
-    "cardDescription": "Téléchargez une image ou fournissez une URL d'image et notre IA la décrira pour vous.",
+    "cardDescription": "Téléchargez une image ou fournissez des URLs d'images (une par ligne) et notre IA les décrira pour vous.",
     "uploadLabel": "Télécharger une image",
     "uploadMaxSize": "(Max 4Mo)",
     "uploadClick": "Cliquez pour télécharger",
@@ -20,12 +20,12 @@
     "uploadSelectedFile": "Sélectionné : {{fileName}}",
     "uploadSupportedFormats": "PNG, JPG, GIF, WEBP jusqu'à 4Mo",
     "orSeparator": "OU",
-    "imageUrlLabel": "Ou entrez l'URL de l'image",
-    "imageUrlPlaceholder": "https://example.com/image.jpg",
-    "imageUrlEmptyError": "Veuillez entrer une URL d'image.",
-    "apiGenerateButton": "Générer la légende depuis l'URL",
-    "apiGeneratingButton": "Génération depuis l'URL...",
-    "apiError": "Échec de la génération de la légende à partir de l'URL. Veuillez vérifier l'URL et réessayer.",
+    "urlsLabel": "Ou entrez les URLs des images (une par ligne)",
+    "urlsPlaceholder": "https://example.com/image1.jpg\nhttps://example.com/image2.png\n...",
+    "urlsEmptyError": "Veuillez entrer au moins une URL d'image.",
+    "generateFromUrlsButton": "Générer les légendes depuis les URLs",
+    "generatingFromUrlsButton": "Génération depuis les URLs...",
+    "apiError": "Échec de la génération des légendes. Veuillez vérifier les URLs et réessayer.",
     "maxWordsLabel": "Mots max. pour la légende :",
     "maxWordsPlaceholder": "ex: 10 (défaut)",
     "errorTitle": "Erreur",
@@ -38,8 +38,11 @@
     "previewTitle": "Aperçu :",
     "imageAltPreview": "Aperçu téléchargé",
     "captionTitle": "Légende générée :",
+    "resultsTitle": "Résultats :",
+    "imagePreviewAlt": "Aperçu pour {{url}}",
+    "errorForUrl": "Erreur pour {{url}} : {{errorMessage}}",
     "captionPlaceholder": "La légende de votre image apparaîtra ici une fois générée.",
-    "imageAndCaptionPlaceholder": "Téléchargez une image ou entrez une URL pour voir l'aperçu et la légende.",
-    "poweredBy": "Propulsé par Genkit et le modèle BLIP."
+    "imageAndCaptionPlaceholder": "Téléchargez une image ou entrez des URLs pour voir les aperçus et les légendes.",
+    "poweredBy": "Propulsé par Genkit et le modèle Gemini."
   }
 }

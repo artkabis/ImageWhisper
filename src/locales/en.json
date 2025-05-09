@@ -12,7 +12,7 @@
   },
   "imageCaptioningForm": {
     "cardTitle": "Generate Image Caption",
-    "cardDescription": "Upload an image or provide an image URL and our AI will describe it for you.",
+    "cardDescription": "Upload an image or provide image URLs (one per line) and our AI will describe them for you.",
     "uploadLabel": "Upload Image",
     "uploadMaxSize": "(Max 4MB)",
     "uploadClick": "Click to upload",
@@ -20,12 +20,12 @@
     "uploadSelectedFile": "Selected: {{fileName}}",
     "uploadSupportedFormats": "PNG, JPG, GIF, WEBP up to 4MB",
     "orSeparator": "OR",
-    "imageUrlLabel": "Or Enter Image URL",
-    "imageUrlPlaceholder": "https://example.com/image.jpg",
-    "imageUrlEmptyError": "Please enter an image URL.",
-    "apiGenerateButton": "Generate Caption from URL",
-    "apiGeneratingButton": "Generating from URL...",
-    "apiError": "Failed to generate caption from URL. Please check the URL and try again.",
+    "urlsLabel": "Or Enter Image URLs (one per line)",
+    "urlsPlaceholder": "https://example.com/image1.jpg\nhttps://example.com/image2.png\n...",
+    "urlsEmptyError": "Please enter at least one image URL.",
+    "generateFromUrlsButton": "Generate Captions from URLs",
+    "generatingFromUrlsButton": "Generating from URLs...",
+    "apiError": "Failed to generate captions. Please check the URLs and try again.",
     "maxWordsLabel": "Max Words for Caption:",
     "maxWordsPlaceholder": "e.g., 10 (default)",
     "errorTitle": "Error",
@@ -38,8 +38,11 @@
     "previewTitle": "Preview:",
     "imageAltPreview": "Uploaded preview",
     "captionTitle": "Generated Caption:",
+    "resultsTitle": "Results:",
+    "imagePreviewAlt": "Preview for {{url}}",
+    "errorForUrl": "Error for {{url}}: {{errorMessage}}",
     "captionPlaceholder": "Your image caption will appear here once generated.",
-    "imageAndCaptionPlaceholder": "Upload an image or enter a URL to see the preview and caption.",
-    "poweredBy": "Powered by Genkit and BLIP model."
+    "imageAndCaptionPlaceholder": "Upload an image or enter URLs to see previews and captions.",
+    "poweredBy": "Powered by Genkit and Gemini model."
   }
 }
